@@ -16,7 +16,7 @@ module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Пользователь с введенным _id не найден' });
+        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Пользователь с введенным _id не найден' });
       } else { res.send({ data: { user: user.name, about: user.about, avatar: user.avatar, _id: user._id } }) }
     })
     .catch((err) => {
@@ -29,7 +29,7 @@ module.exports.getUser = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then(user => res.send({ data: user }))
+    .then(user => res.send({ data: { user: user.name, about: user.about, avatar: user.avatar, _id: user._id }}))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания пользователя' });
