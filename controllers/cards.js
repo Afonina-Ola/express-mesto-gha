@@ -21,7 +21,7 @@ module.exports.createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания карточки' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
@@ -31,7 +31,7 @@ module.exports.deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
@@ -46,7 +46,7 @@ module.exports.likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
@@ -60,7 +60,7 @@ module.exports.dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 

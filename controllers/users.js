@@ -14,13 +14,15 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
-    .then(({ name, about, avatar, _id }) => {
-      res.send({ data: { name, about, avatar, _id } })
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Пользователь с введенным _id не найден' });
+      } else { res.send({ data: { user: user.name, about: user.about, avatar: user.avatar, _id: user._id } }) }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Пользователь с введенным _id не найден' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Пользователь с введенным _id не найден' });
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
@@ -31,7 +33,7 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания пользователя' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
@@ -47,7 +49,7 @@ module.exports.updateUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания пользователя' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
@@ -63,7 +65,7 @@ module.exports.updateUserAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания аватара пользователя' });
-      } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
+      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
 
