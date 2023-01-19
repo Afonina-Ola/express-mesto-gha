@@ -16,12 +16,12 @@ module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Пользователь с введенным _id не найден' });
+        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Пользователь с введенным _id не найден' });
       } else { res.send({ data: { name: user.name, about: user.about, avatar: user.avatar, _id: user._id } }) }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Пользователь с введенным _id не найден' });
+        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Пользователь с введенным _id не найден' });
       } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
