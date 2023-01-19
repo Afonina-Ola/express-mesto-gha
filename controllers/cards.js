@@ -29,10 +29,14 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then(card => res.send({ data: card }))
+  .then((card) => {
+    if (!card) {
+      res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
+    } else { res.send({ data: card }) }
+  })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
+        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Карточка с введенным _id не найдена' });
       } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
