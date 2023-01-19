@@ -19,7 +19,7 @@ module.exports.getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Пользователь с введенным _id не найден' });
+        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Пользователь с введенным _id не найден' });
       } else { () => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }) }
     });
 };
