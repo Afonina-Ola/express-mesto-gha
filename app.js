@@ -6,7 +6,9 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { PORT = 3000, BASE_PATH } = process.env;
 const app = express();
-
+const ERROR_CODES = {
+  NOT_FOUND_ERROR: 404,
+}
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,6 +27,11 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 
 app.use('/cards', cardRouter);
+
+app.use((req, res) => {
+res.status(ERROR_CODES.NOT_FOUND_ERROR);
+res.send({message:'Запрашиваемый ресурс не найден'})
+});
 
 // клиент имеет доступ только к публичным файлам
 // app.use(express.static(path.join(__dirname, 'public')));
