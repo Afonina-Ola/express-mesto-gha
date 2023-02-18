@@ -30,7 +30,7 @@ userRouter.get('/me', getUserInfo);
 // возвращает пользователя по _id
 userRouter.get('/:userId', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex().required(),
+    userId: Joi.string().required(),
   }).unknown(true),
 }), getUser);
 

@@ -19,9 +19,9 @@ module.exports.getUser = (req, res, next) => {
     .orFail(() => { })
     .then((user) => res.send({
       data:
-        {
-          name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
-        },
+      {
+        name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
+      },
     }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
