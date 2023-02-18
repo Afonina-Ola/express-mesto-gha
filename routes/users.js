@@ -1,22 +1,37 @@
 const userRouter = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
+const { urlValidator } = require('../errors/url-validator');
 
 const {
-  getUsers, getUser, createUser, updateUser, updateUserAvatar,
+  getUsers, getUser, updateUser, updateUserAvatar, getUserInfo,
 } = require('../controllers/users');
 
 // возвращает всех пользователей
 userRouter.get('/', getUsers);
 
-// возвращает пользователя по _id
-userRouter.get('/:userId', getUser);
-
-// создаёт пользователя
-userRouter.post('/', createUser);
-
 // обновляет профиль
-userRouter.patch('/me', updateUser);
+userRouter.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+  }),
+}), updateUser);
 
 // обновляет аватар
-userRouter.patch('/me/avatar', updateUserAvatar);
+userRouter.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().custom(urlValidator),
+  }),
+}), updateUserAvatar);
+
+// возвращает информацию о текущем пользователе
+userRouter.get('/me', getUserInfo);
+
+// возвращает пользователя по _id
+userRouter.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex().required(),
+  }).unknown(true),
+}), getUser);
 
 module.exports = userRouter;

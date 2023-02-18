@@ -1,12 +1,8 @@
 const Card = require('../models/card');
+const NotFoundError = require('../errors/not-found-error');
+const ErrorCode = require('../errors/error-code');
 
-const ERROR_CODES = {
-  NOT_FOUND_ERROR: 404,
-  ERROR_CODE: 400,
-  SERVER_ERROR: 500,
-};
-
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({
       data: cards.map(({
@@ -15,35 +11,45 @@ module.exports.getCards = (req, res) => {
         createdAt, likes, link, name, owner, _id,
       })),
     }))
-    .catch(() => res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }));
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания карточки' });
-      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }); }
-    });
+        throw new ErrorCode('Переданы некорректные данные в методы создания карточки');
+      } else { next(err); }
+    })
+    .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+module.exports.deleteCard = (req, res, next) => {
+  Card.findById(req.params.cardId)
+    .orFail(() => { })
+    .populate('owner')
     .then((card) => {
-      if (!card) {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
-      } else { res.send({ data: card }); }
+      if (card.owner && card.owner.id === req.user._id) {
+        card.remove()
+          .then(() => {
+            res.send({ data: card });
+          })
+          .catch(next);
+      } else {
+        throw new ErrorCode('Недостаточно прав для этого действия');
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Веденный _id не корректен' });
-      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }); }
-    });
+        throw new ErrorCode('Веденный _id не корректен');
+      } else { next(err); }
+    })
+    .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -51,17 +57,18 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
+        throw new NotFoundError('Карточка с введенным _id не найдена');
       } else { res.send({ data: card }); }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Веденный _id не корректен' });
-      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }); }
-    });
+        throw new ErrorCode('Веденный _id не корректен');
+      } else { next(err); }
+    })
+    .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
@@ -69,12 +76,13 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(ERROR_CODES.NOT_FOUND_ERROR).send({ message: 'Карточка с введенным _id не найдена' });
+        throw new NotFoundError('Карточка с введенным _id не найдена');
       } else { res.send({ data: card }); }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODES.ERROR_CODE).send({ message: 'Веденный _id не корректен' });
-      } else { res.status(ERROR_CODES.SERVER_ERROR).send({ message: 'Произошла ошибка сервера' }); }
-    });
+        throw new ErrorCode('Веденный _id не корректен');
+      } else { next(err); }
+    })
+    .catch(next);
 };
