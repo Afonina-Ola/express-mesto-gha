@@ -52,16 +52,15 @@ module.exports.deleteCard = (req, res, next) => {
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка с введенным _id не найдена');
-      } else { res.send({ data: card }); }
-    })
+    .orFail(() => { })
+    .then((card) => { res.send({ data: card }); })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
+        throw new NotFoundError('Карточка с введенным _id не найдена');
+      } else if (err.name === 'CastError') {
         throw new ErrorCode('Веденный _id не корректен');
       } else { next(err); }
     })
