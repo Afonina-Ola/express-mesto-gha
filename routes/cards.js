@@ -34,7 +34,7 @@ cardRouter.put('/:cardId/likes', celebrate({
 // убрать лайк с карточки
 cardRouter.delete('/:cardId/likes', celebrate({
   params: Joi.object().keys({
-    id: Joi.string().hex(),
+    cardId: Joi.string().hex(),
   }),
 }), dislikeCard);
 

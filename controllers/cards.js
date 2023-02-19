@@ -73,13 +73,12 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка с введенным _id не найдена');
-      } else { res.send({ data: card }); }
-    })
+    .orFail(() => { })
+    .then((card) => { res.send({ data: card }); })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
+        throw new NotFoundError('Карточка с введенным _id не найдена');
+      } else if (err.name === 'CastError') {
         throw new ErrorCode('Веденный _id не корректен');
       } else { next(err); }
     })
