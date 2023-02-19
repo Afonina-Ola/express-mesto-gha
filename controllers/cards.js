@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-error');
 const ErrorCode = require('../errors/error-code');
+const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -38,7 +39,7 @@ module.exports.deleteCard = (req, res, next) => {
           })
           .catch(next);
       } else {
-        throw new ErrorCode('Недостаточно прав для этого действия');
+        throw new ForbiddenError('Недостаточно прав для этого действия');
       }
     })
     .catch((err) => {
