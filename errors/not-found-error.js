@@ -1,10 +1,10 @@
 const ERROR_CODES = require('../utils/constants');
 
-class NotFounError extends Error {
+class NotFoundError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = ERROR_CODES.NOT_FOUND_ERROR;
   }
 }
 
-module.exports = NotFounError;
+module.exports = NotFoundError;
