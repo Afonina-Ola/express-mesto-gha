@@ -47,10 +47,14 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ErrorCode('Переданы некорректные данные в методы создания пользователя');
+        const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
+        next(error);
       } else if (err.code === 11000) {
-        throw new ConflictCode('Пользователь с таким email уже существует');
-      } else { next(err); }
+        const error = new ConflictCode('Пользователь с таким email уже существует');
+        next(error);
+      } else {
+        next(err);
+      }
     });
 };
 
