@@ -25,9 +25,11 @@ module.exports.getUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('Пользователь с введенным _id не найден');
+        const error = new NotFoundError('Пользователь с введенным _id не найден');
+        next(error);
       } else if (err.name === 'CastError') {
-        throw new ErrorCode('Веденный _id не корректен');
+        const error = new ErrorCode('Веденный _id не корректен');
+        next(error);
       } else { next(err); }
     });
 };
@@ -71,7 +73,8 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ErrorCode('Переданы некорректные данные в методы создания пользователя');
+        const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
+        next(error);
       } else { next(err); }
     });
 };
@@ -89,7 +92,8 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя');
+        const error = new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя');
+        next(error);
       } else { next(err); }
     });
 };

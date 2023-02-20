@@ -21,7 +21,8 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ErrorCode('Переданы некорректные данные в методы создания карточки');
+        const error = new ErrorCode('Переданы некорректные данные в методы создания карточки');
+        next(error);
       } else { next(err); }
     });
 };
@@ -43,9 +44,11 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new ErrorCode('Веденный _id не корректен');
+        const error = new ErrorCode('Веденный _id не корректен');
+        next(error);
       } else if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('Карточка с введенным _id не найдена');
+        const error = new NotFoundError('Карточка с введенным _id не найдена');
+        next(error);
       } else { next(err); }
     });
 };
@@ -60,9 +63,11 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => { res.send({ data: card }); })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('Карточка с введенным _id не найдена');
+        const error = new NotFoundError('Карточка с введенным _id не найдена');
+        next(error);
       } else if (err.name === 'CastError') {
-        throw new ErrorCode('Веденный _id не корректен');
+        const error = new ErrorCode('Веденный _id не корректен');
+        next(error);
       } else { next(err); }
     });
 };
@@ -77,9 +82,11 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => { res.send({ data: card }); })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        throw new NotFoundError('Карточка с введенным _id не найдена');
+        const error = new NotFoundError('Карточка с введенным _id не найдена');
+        next(error);
       } else if (err.name === 'CastError') {
-        throw new ErrorCode('Веденный _id не корректен');
+        const error = new ErrorCode('Веденный _id не корректен');
+        next(error);
       } else { next(err); }
     });
 };
