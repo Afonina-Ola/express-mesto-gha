@@ -23,8 +23,7 @@ module.exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new ErrorCode('Переданы некорректные данные в методы создания карточки');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.deleteCard = (req, res, next) => {
@@ -48,8 +47,7 @@ module.exports.deleteCard = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         throw new NotFoundError('Карточка с введенным _id не найдена');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -66,8 +64,7 @@ module.exports.likeCard = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new ErrorCode('Веденный _id не корректен');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -84,6 +81,5 @@ module.exports.dislikeCard = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new ErrorCode('Веденный _id не корректен');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };

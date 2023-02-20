@@ -29,8 +29,7 @@ module.exports.getUser = (req, res, next) => {
       } else if (err.name === 'CastError') {
         throw new ErrorCode('Веденный _id не корректен');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.createUser = (req, res, next) => {
@@ -52,8 +51,7 @@ module.exports.createUser = (req, res, next) => {
       } else if (err.code === 11000) {
         throw new ConflictCode('Пользователь с таким email уже существует');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -71,8 +69,7 @@ module.exports.updateUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new ErrorCode('Переданы некорректные данные в методы создания пользователя');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.updateUserAvatar = (req, res, next) => {
@@ -90,21 +87,17 @@ module.exports.updateUserAvatar = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя');
       } else { next(err); }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      // создадим токен
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      // вернём токен
-      res.send({ token });
-    })
-    .catch(() => {
-      throw new UnauthorizedError('Неверный логин или пароль');
+      if (user) {
+        const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+        res.send({ token });
+      } else { throw new UnauthorizedError('Неверный логин или пароль'); }
     })
     .catch(next);
 };
