@@ -25,11 +25,9 @@ module.exports.getUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        const error = new NotFoundError('Пользователь с введенным _id не найден');
-        next(error);
+        next(new NotFoundError('Пользователь с введенным _id не найден'));
       } else if (err.name === 'CastError') {
-        const error = new ErrorCode('Веденный _id не корректен');
-        next(error);
+        next(new ErrorCode('Веденный _id не корректен'));
       } else { next(err); }
     });
 };
@@ -49,11 +47,9 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
-        next(error);
+        next(new ErrorCode('Переданы некорректные данные в методы создания пользователя'));
       } else if (err.code === 11000) {
-        const error = new ConflictCode('Пользователь с таким email уже существует');
-        next(error);
+        next(new ConflictCode('Пользователь с таким email уже существует'));
       } else {
         next(err);
       }
@@ -73,8 +69,7 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
-        next(error);
+        next(new ErrorCode('Переданы некорректные данные в методы создания пользователя'));
       } else { next(err); }
     });
 };
@@ -92,8 +87,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        const error = new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя');
-        next(error);
+        next(new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя'));
       } else { next(err); }
     });
 };
