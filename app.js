@@ -1,5 +1,16 @@
 /* eslint-disable no-console */
 const express = require('express');
+const cors = require('cors');
+
+const options = {
+  origin: ['http://localhost:3000', 'https://backend.homamesto.nomoredomains.monster',
+    'http://backend.homamesto.nomoredomains.monster', 'https://YOUR.github.io'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
@@ -14,6 +25,8 @@ const { PORT = 3000 } = process.env;
 const app = express();
 const ERROR_CODES = require('./utils/constants');
 const NotFoundError = require('./errors/not-found-error');
+
+app.use('*', cors(options));
 
 app.use(bodyParser.json());
 

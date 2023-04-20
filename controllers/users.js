@@ -25,9 +25,11 @@ module.exports.getUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Пользователь с введенным _id не найден'));
+        const error = new NotFoundError('Пользователь с введенным _id не найден');
+        next(error);
       } else if (err.name === 'CastError') {
-        next(new ErrorCode('Веденный _id не корректен'));
+        const error = new ErrorCode('Веденный _id не корректен');
+        next(error);
       } else { next(err); }
     });
 };
@@ -47,9 +49,11 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ErrorCode('Переданы некорректные данные в методы создания пользователя'));
+        const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
+        next(error);
       } else if (err.code === 11000) {
-        next(new ConflictCode('Пользователь с таким email уже существует'));
+        const error = new ConflictCode('Пользователь с таким email уже существует');
+        next(error);
       } else {
         next(err);
       }
@@ -69,7 +73,8 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ErrorCode('Переданы некорректные данные в методы создания пользователя'));
+        const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
+        next(error);
       } else { next(err); }
     });
 };
@@ -87,7 +92,8 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя'));
+        const error = new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя');
+        next(error);
       } else { next(err); }
     });
 };
