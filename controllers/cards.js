@@ -5,20 +5,14 @@ const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({
-      data: cards.map(({
-        createdAt, likes, link, name, owner, _id,
-      }) => ({
-        createdAt, likes, link, name, owner, _id,
-      })),
-    }))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ErrorCode('Переданы некорректные данные в методы создания карточки');
@@ -35,7 +29,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner && card.owner.id === req.user._id) {
         card.remove()
           .then(() => {
-            res.send({ data: card });
+            res.send(card);
           })
           .catch(next);
       } else {
@@ -60,7 +54,7 @@ module.exports.likeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => { })
-    .then((card) => { res.send({ data: card }); })
+    .then((card) => { res.send(card); })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         const error = new NotFoundError('Карточка с введенным _id не найдена');
@@ -79,7 +73,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => { })
-    .then((card) => { res.send({ data: card }); })
+    .then((card) => { res.send(card); })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         const error = new NotFoundError('Карточка с введенным _id не найдена');

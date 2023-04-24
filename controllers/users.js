@@ -10,19 +10,14 @@ const UnauthorizedError = require('../errors/unauthorized-error');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => { })
-    .then((user) => res.send({
-      data:
-      {
-        name: user.name, about: user.about, avatar: user.avatar, _id: user._id,
-      },
-    }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         const error = new NotFoundError('Пользователь с введенным _id не найден');
@@ -42,11 +37,7 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send({
-      data: {
-        name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
-      },
-    }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
@@ -70,7 +61,7 @@ module.exports.updateUser = (req, res, next) => {
       runValidators: true,
     },
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ErrorCode('Переданы некорректные данные в методы создания пользователя');
@@ -89,7 +80,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
       runValidators: true,
     },
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ErrorCode('Переданы некорректные данные в методы создания аватара пользователя');
@@ -112,6 +103,6 @@ module.exports.login = (req, res, next) => {
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findOne({ _id: req.user._id })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch(next);
 };
