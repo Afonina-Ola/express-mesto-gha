@@ -3,8 +3,8 @@ const express = require('express');
 const cors = require('cors');
 
 const options = {
-  origin: ['http://localhost:3000', 'https://backend.homamesto.nomoredomains.monster',
-    'http://backend.homamesto.nomoredomains.monster', 'https://YOUR.github.io'],
+  origin: ['http://localhost:3000', 'https://homamesto.nomoredomains.monster',
+    'http://homamesto.nomoredomains.monster', 'https://YOUR.github.io'],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
