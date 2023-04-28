@@ -15,6 +15,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { urlValidator } = require('./errors/url-validator');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
@@ -36,6 +37,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useNewUrlParser: true,
 });
 
+app.use(requestLogger); // подключаем логгер запросов
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -56,6 +59,8 @@ app.post('/signup', celebrate({
 app.use('/users', auth, userRouter);
 
 app.use('/cards', auth, cardRouter);
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(() => {
   throw new NotFoundError('Запрашиваемый ресурс не найден');
