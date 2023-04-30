@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const options = {
   origin: ['http://localhost:3000', 'https://homamesto.nomoredomains.monster',
-    'http://homamesto.nomoredomains.monster', 'https://YOUR.github.io'],
+    'http://homamesto.nomoredomains.monster', 'https://github.com/Afonina-Ola/react-mesto-api-full-gha'],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
