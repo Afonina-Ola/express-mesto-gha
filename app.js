@@ -2,20 +2,11 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-
-const options = {
-  origin: ['http://localhost:3000', 'https://homamesto.nomoredomains.monster',
-    'http://homamesto.nomoredomains.monster', 'https://github.com/Afonina-Ola/react-mesto-api-full-gha'],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-  credentials: true,
-};
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
+const options = require('./utils/constants');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { urlValidator } = require('./errors/url-validator');
 const userRouter = require('./routes/users');
@@ -60,18 +51,20 @@ app.post('/signup', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom(urlValidator),
-  }).unknown(true),
+  }),
 }), createUser);
 
-app.use('/users', auth, userRouter);
+app.use(auth);
 
-app.use('/cards', auth, cardRouter);
+app.use('/users', userRouter);
 
-app.use(errorLogger); // подключаем логгер ошибок
+app.use('/cards', cardRouter);
 
 app.use(() => {
   throw new NotFoundError('Запрашиваемый ресурс не найден');
 });
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors());
 

@@ -7,4 +7,14 @@ const ERROR_CODES = {
   FORBIDDEN_ERROR: 403,
 };
 
-module.exports = ERROR_CODES;
+const options = {
+  origin: ['http://localhost:3000', 'https://homamesto.nomoredomains.monster',
+    'http://homamesto.nomoredomains.monster', 'https://github.com/Afonina-Ola/react-mesto-api-full-gha'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
+
+module.exports = { ERROR_CODES, options };

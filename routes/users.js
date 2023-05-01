@@ -30,8 +30,8 @@ userRouter.get('/me', getUserInfo);
 // возвращает пользователя по _id
 userRouter.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().hex().required(),
-  }).unknown(true),
+    userId: Joi.string().hex().required().length(24),
+  }),
 }), getUser);
 
 module.exports = userRouter;
